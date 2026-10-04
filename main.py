@@ -1,5 +1,3 @@
-from nis import cat
-
 from wineQualityML import logger
 from wineQualityML.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
 from wineQualityML.pipeline.stage_02_data_validation import DataValidationTrainingPipeline

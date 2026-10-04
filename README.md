@@ -17,7 +17,7 @@
 1. Clone the repo and go into it:
    ```bash
    git clone <repo-url>
-   cd ML-flow
+   cd wine-quality-prediction
    ```
 2. Create and activate a conda environment:
    ```bash
