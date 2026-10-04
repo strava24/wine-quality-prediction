@@ -2,6 +2,7 @@ from wineQualityML import logger
 from wineQualityML.pipeline.stage_01_data_ingestion import DataIngestionTrainingPipeline
 from wineQualityML.pipeline.stage_02_data_validation import DataValidationTrainingPipeline
 from wineQualityML.pipeline.stage_03_data_transformation import DataTransformationPipline
+from wineQualityML.pipeline.stage_04_model_trainer import ModelTrainerTrainingPipeline
 
 STAGE_NAME = "Data Ingestion Stage"
 try:
@@ -28,6 +29,16 @@ try:
     logger.info(f">>>>>> stage {STAGE_NAME} started")
     data_transformation = DataTransformationPipline()
     data_transformation.main()
+    logger.info(f"completed: {STAGE_NAME}")
+except Exception as e:
+    logger.exception(e)
+    raise e
+
+STAGE_NAME = "Data Trainer Stage"
+try:
+    logger.info(f">>>>>> stage {STAGE_NAME} started")
+    model_trainer = ModelTrainerTrainingPipeline()
+    model_trainer.main()
     logger.info(f"completed: {STAGE_NAME}")
 except Exception as e:
     logger.exception(e)
