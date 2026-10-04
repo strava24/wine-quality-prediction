@@ -28,7 +28,12 @@
    ```bash
    pip install -r requirements.txt
    ```
-4. Run the pipeline:
+4. Create your `.env` for MLflow / DagsHub (see [dagshub](#dagshub) below):
+   ```bash
+   cp .env.example .env
+   ```
+   Then fill in your DagsHub URI, username and token.
+5. Run the pipeline:
    ```bash
    python main.py
    ```
@@ -89,3 +94,58 @@ How it is set up:
 - `config/config.yaml`: the `model_trainer` paths and model name
 - `params.yaml`: the ElasticNet settings
 - `research/model_trainer.ipynb`: the first working version (not yet a pipeline stage)
+
+## Model Evaluation
+
+The goal: measure how well the trained model predicts on unseen data, and log the results to MLflow (DagsHub).
+
+1. **Read** `test.csv` from `artifacts/data_transformation/` and load `model.joblib` from `artifacts/model_trainer/`.
+2. **Predict** the `quality` of the test rows.
+3. **Score** the predictions with RMSE, MAE and R2.
+4. **Save** the scores to `artifacts/model_evaluation/metrics.json`.
+5. **Log** the ElasticNet params, the metrics and the model to MLflow. The model is also registered as `ElasticnetModel`.
+
+How it is set up:
+- `config/config.yaml`: the `model_evaluation` paths
+- `params.yaml`: the ElasticNet settings that get logged
+- `.env`: the MLflow credentials (see the MLflow section below)
+- `research/model_evaluation.ipynb`: the first working version (not yet a pipeline stage)
+
+
+# MLflow
+
+[Documentation](https://mlflow.org/docs/latest/index.html)
+
+
+##### cmd
+- mlflow ui
+
+### dagshub
+
+[DagsHub](https://dagshub.com/) hosts the MLflow server, so every run (params, metrics, model) is stored online and can be compared in the repo's **Experiments** tab.
+
+#### Setup
+
+1. Copy the example file and create your own `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+2. Fill in the three values in `.env`:
+   ```
+   MLFLOW_TRACKING_URI=https://dagshub.com/<username>/<repo>.mlflow
+   MLFLOW_TRACKING_USERNAME=<your-dagshub-username>
+   MLFLOW_TRACKING_PASSWORD=<your-dagshub-token>
+   ```
+   - On DagsHub, open the repo, click **Remote**, then **Experiments**. The "Using MLflow" section shows all three values.
+   - The token is under **Settings > Tokens**. It is an access token, not your account password.
+3. Run the notebook (`research/model_evaluation.ipynb`). It loads `.env` with `python-dotenv` and checks that all three values are set.
+
+`.env` is git-ignored, so the token stays on your machine. Only `.env.example` (placeholders) is committed. Never put the real token in the README, a notebook or a commit.
+
+To use the values in your shell instead, export them:
+
+```bash
+export MLFLOW_TRACKING_URI=https://dagshub.com/<username>/<repo>.mlflow
+export MLFLOW_TRACKING_USERNAME=<your-dagshub-username>
+export MLFLOW_TRACKING_PASSWORD=<your-dagshub-token>
+```
