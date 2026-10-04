@@ -21,8 +21,8 @@
    ```
 2. Create and activate a conda environment:
    ```bash
-   conda create -n mlflow-env python=3.8 -y
-   conda activate mlflow-env
+   conda create -p ./venv python=3.11 -y
+   conda activate ./venv
    ```
 3. Install the dependencies:
    ```bash
@@ -47,3 +47,16 @@ How the code is split:
 - `components/data_ingestion.py`: does the download and extract
 - `pipeline/stage_01_data_ingestion.py`: runs the steps in order
 - `main.py`: runs the stage and logs it
+
+## Data Validation
+
+The goal: make sure the data has the columns we expect before using it.
+
+1. **Read** the CSV from `artifacts/data_ingestion/winequality-red.csv`.
+2. **Check** that every column name exists in `schema.yaml`.
+3. **Save** the result (`True` or `False`) to `artifacts/data_validation/status.txt`.
+
+How it is set up:
+- `schema.yaml`: the expected columns and their types
+- `config/config.yaml`: the `data_validation` paths
+- `research/data_validation.ipynb`: the first working version (not yet a pipeline stage)
