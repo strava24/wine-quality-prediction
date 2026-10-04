@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Predict wine quality from its physicochemical properties." />
+    <title>Wine Quality Prediction</title>
+    <link rel="icon" type="image/x-icon" href="static/assets/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --wine: #7b1e3a;
+            --wine-dark: #5a1229;
+            --wine-light: #f9eef1;
+            --gold: #c9a45c;
+            --ink: #2a2025;
+            --muted: #7a6b72;
+            --line: #e6dde1;
+            --bg: #faf6f4;
+            --card: #ffffff;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, sans-serif;
+            color: var(--ink);
+            background: var(--bg);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            padding: 72px 20px 120px;
+            text-align: center;
+            color: #fff;
+            background:
+                linear-gradient(160deg, rgba(90, 18, 41, .92), rgba(42, 12, 24, .88)),
+                url('static/assets/img/wine.jpg') center / cover no-repeat;
+        }
+        .hero .badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border: 1px solid rgba(201, 164, 92, .6);
+            border-radius: 999px;
+            color: var(--gold);
+            font-size: .75rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+        }
+        .hero h1 {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(2rem, 5vw, 3.4rem);
+            line-height: 1.15;
+        }
+        .hero p {
+            margin: 14px auto 0;
+            max-width: 520px;
+            color: rgba(255, 255, 255, .8);
+            font-size: 1.05rem;
+        }
+
+        /* Card */
+        main { flex: 1; padding: 0 16px 56px; }
+        .card {
+            max-width: 820px;
+            margin: -72px auto 0;
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(60, 20, 35, .15);
+            padding: 36px;
+            position: relative;
+        }
+        .card h2 {
+            font-family: "Playfair Display", serif;
+            font-size: 1.6rem;
+            color: var(--wine);
+        }
+        .card .lead { color: var(--muted); font-size: .95rem; margin: 4px 0 26px; }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin: 26px 0 14px;
+        }
+        .section-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+        .section-title:first-of-type { margin-top: 0; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px 20px;
+        }
+
+        .field label {
+            display: block;
+            font-size: .85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .field .unit { color: var(--muted); font-weight: 400; }
+        .field input {
+            width: 100%;
+            padding: 12px 14px;
+            font: inherit;
+            color: var(--ink);
+            background: #fdfbfb;
+            border: 1.5px solid var(--line);
+            border-radius: 10px;
+            transition: border-color .15s, box-shadow .15s, background .15s;
+        }
+        .field input::placeholder { color: #b8aab1; }
+        .field input:hover { border-color: #d3c4cb; }
+        .field input:focus {
+            outline: none;
+            background: #fff;
+            border-color: var(--wine);
+            box-shadow: 0 0 0 4px rgba(123, 30, 58, .12);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+        .btn {
+            font: inherit;
+            font-weight: 600;
+            padding: 14px 24px;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: transform .1s, box-shadow .15s, background .15s;
+        }
+        .btn:active { transform: translateY(1px); }
+        .btn-primary {
+            flex: 1;
+            color: #fff;
+            font-size: 1.05rem;
+            background: linear-gradient(135deg, var(--wine), var(--wine-dark));
+            box-shadow: 0 8px 20px rgba(123, 30, 58, .3);
+        }
+        .btn-primary:hover { box-shadow: 0 10px 26px rgba(123, 30, 58, .42); }
+        .btn-ghost {
+            color: var(--wine);
+            background: var(--wine-light);
+        }
+        .btn-ghost:hover { background: #f3dde3; }
+
+        footer {
+            text-align: center;
+            padding: 24px 16px;
+            color: var(--muted);
+            font-size: .85rem;
+            border-top: 1px solid var(--line);
+        }
+        footer a { color: var(--wine); text-decoration: none; font-weight: 600; margin: 0 8px; }
+        footer a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .hero { padding: 52px 16px 104px; }
+            .card { padding: 24px 18px; margin-top: -64px; }
+            .grid { grid-template-columns: 1fr; }
+            .actions { flex-direction: column-reverse; }
+        }
+    </style>
+</head>
+<body>
+    <header class="hero">
+        <span class="badge">Machine Learning</span>
+        <h1>Wine Quality Prediction</h1>
+        <p>Enter a wine's chemical properties and our model will estimate its quality score.</p>
+    </header>
+
+    <main>
+        <div class="card">
+            <h2>Wine Details</h2>
+            <p class="lead">All fields are required. Use decimal numbers, e.g. 7.4</p>
+
+            <form action="/predict" method="post">
+                <div class="section-title">Acidity</div>
+                <div class="grid">
+                    <div class="field">
+                        <label for="fixed_acidity">Fixed Acidity <span class="unit">(g/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="fixed_acidity" id="fixed_acidity" placeholder="e.g. 7.4" required />
+                    </div>
+                    <div class="field">
+                        <label for="volatile_acidity">Volatile Acidity <span class="unit">(g/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="volatile_acidity" id="volatile_acidity" placeholder="e.g. 0.70" required />
+                    </div>
+                    <div class="field">
+                        <label for="citric_acid">Citric Acid <span class="unit">(g/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="citric_acid" id="citric_acid" placeholder="e.g. 0.00" required />
+                    </div>
+                    <div class="field">
+                        <label for="pH">pH</label>
+                        <input type="number" step="any" min="0" max="14" name="pH" id="pH" placeholder="e.g. 3.51" required />
+                    </div>
+                </div>
+
+                <div class="section-title">Composition</div>
+                <div class="grid">
+                    <div class="field">
+                        <label for="residual_sugar">Residual Sugar <span class="unit">(g/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="residual_sugar" id="residual_sugar" placeholder="e.g. 1.9" required />
+                    </div>
+                    <div class="field">
+                        <label for="chlorides">Chlorides <span class="unit">(g/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="chlorides" id="chlorides" placeholder="e.g. 0.076" required />
+                    </div>
+                    <div class="field">
+                        <label for="free_sulfur_dioxide">Free Sulfur Dioxide <span class="unit">(mg/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="free_sulfur_dioxide" id="free_sulfur_dioxide" placeholder="e.g. 11" required />
+                    </div>
+                    <div class="field">
+                        <label for="total_sulfur_dioxide">Total Sulfur Dioxide <span class="unit">(mg/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="total_sulfur_dioxide" id="total_sulfur_dioxide" placeholder="e.g. 34" required />
+                    </div>
+                </div>
+
+                <div class="section-title">Other Properties</div>
+                <div class="grid">
+                    <div class="field">
+                        <label for="density">Density <span class="unit">(g/cm³)</span></label>
+                        <input type="number" step="any" min="0" name="density" id="density" placeholder="e.g. 0.9978" required />
+                    </div>
+                    <div class="field">
+                        <label for="sulphates">Sulphates <span class="unit">(g/dm³)</span></label>
+                        <input type="number" step="any" min="0" name="sulphates" id="sulphates" placeholder="e.g. 0.56" required />
+                    </div>
+                    <div class="field">
+                        <label for="alcohol">Alcohol <span class="unit">(% vol)</span></label>
+                        <input type="number" step="any" min="0" name="alcohol" id="alcohol" placeholder="e.g. 9.4" required />
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="reset" class="btn btn-ghost">Clear</button>
+                    <button type="submit" class="btn btn-primary">Predict Quality</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <a href="https://www.linkedin.com/in/boktiarahmed73/">LinkedIn</a>·
+        <a href="https://www.youtube.com/dswithbappy">YouTube</a>·
+        <a href="https://github.com/entbappy">GitHub</a>
+    </footer>
+</body>
+</html>
