@@ -1,6 +1,6 @@
 # Building Complete ML Flow | Wine Quality Prediction
 
-## Workflows
+## Workflow to follow in all the stages
 
 1. Update config.yaml
 2. Update schema.yaml
